@@ -1,0 +1,41 @@
+{
+  "name": "novel",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./src/routes/index.js",
+  "scripts": {
+    "start": "DEBUG=test,chapter-one,book nodemon app.js --ignore dist/*",
+    "dev": "http-server dist -o",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "alexzhu",
+  "license": "ISC",
+  "dependencies": {
+    "bluebird": "^3.4.6",
+    "cheerio": "^0.22.0",
+    "co": "^4.6.0",
+    "debug": "^2.2.0",
+    "http-server": "^0.9.0",
+    "jade": "^1.11.0",
+    "jsdom": "^9.6.0",
+    "koa": "^2.0.0",
+    "koa-compress": "^1.0.9",
+    "koa-conditional-get": "^1.0.3",
+    "koa-etag": "^2.1.1",
+    "koa-favicon": "^1.2.1",
+    "koa-router": "^7.0.1",
+    "koa-static": "^2.0.0",
+    "koa-views": "^5.1.2",
+    "mongodb": "^2.2.10",
+    "mount-koa-routes": "^2.0.1",
+    "serve": "^1.4.0",
+    "superagent": "^2.3.0"
+  },
+  "devDependencies": {
+    "del": "^2.2.2",
+    "eslint": "^3.7.1"
+  },
+  "comment": {
+    "p": "pm2 start app.js -i 0 --name 'simplereader'"
+  }
+}
