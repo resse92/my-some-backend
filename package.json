@@ -4,7 +4,7 @@
   "description": "",
   "main": "./src/routes/index.js",
   "scripts": {
-    "start": "DEBUG=test,chapter-one,book nodemon app.js --ignore dist/*",
+    "start": "DEBUG=chapter-one,book nodemon app.js --ignore dist/*",
     "dev": "http-server dist -o",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

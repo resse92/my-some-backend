@@ -1,14 +1,14 @@
 "use strict";
 const router = require("koa-router")();
-const debug = require("debug")("test");
+const crawler = require("../src/crawler/crawler.js");
 
 router.get("/", function(ctx, next) {
-    ctx.body = "this /1!";
-    debug("test");
+  ctx.body = "this /1!";
+  crawler();
 });
 
 router.get("/2", function(ctx, next) {
-    ctx.body = "this /2!";
+  ctx.body = "this /2!";
 });
 
 module.exports = router;
