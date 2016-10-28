@@ -132,7 +132,6 @@ function getBookInfo(num, index) {
         var content = $("#content").text();
         //这里做content塞入处理
         chapters.content = content;
-
         return insert(current_book.index + "", chapters);
       })
       .then(function (r) {
@@ -140,9 +139,10 @@ function getBookInfo(num, index) {
       });
       x.push(y);
     }
-    return Promise.all(x).then(function () {
-      debug("成功");
-    });
+    // 这边去掉了Promise.all()就可以多线程查询了,为什么??????
+    // return Promise.all(x).then(function () {
+    //   debug("成功");
+    // });
   });
 }
 
