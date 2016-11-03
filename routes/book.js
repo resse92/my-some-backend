@@ -1,9 +1,7 @@
-"use strict";
 const router = require("koa-router")();
-const debug = require("debug")("book");
 
-router.get("/", function(ctx, next) {
-  ctx.body = "开始";
+router.get("/", function (next) {
+  this.body = "this /book!";
 });
 
 module.exports = router;

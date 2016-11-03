@@ -94,7 +94,7 @@ module.exports = {
         "no-class-assign": 2,
         "no-const-assign": 2,
         "no-dupe-class-members": 2,
-        "require-yield": 2,
+        "require-yield": 1,
         "align-function-arguments": 0
     }
 }

@@ -5,7 +5,7 @@ const debug = require("debug")("chapter-one");
 const Crawler = require("crawler");
 // const jsdom = require("jsdom");
 const MongoClient = require("mongodb").MongoClient;
-const setting = require("../../setting.js");
+const setting = require("../setting.js");
 const co = require("co");
 let c = new Crawler();
 //爬虫
@@ -43,6 +43,45 @@ let insert = function (collection, data) {
   return new Promise(function (resolve, reject) {
     connect().then(function (db) {
       db.collection(collection).insert(data, function(err, r) {
+        db.close();
+        if (err) {
+          debug(err);
+          reject(err);
+        } else {
+          resolve(r);
+        }
+      });
+    });
+  });
+};
+
+let updateBook = function (collection, data) {
+  return new Promise(function (resolve, reject) {
+    connect().then(function (db) {
+      let origin = {
+        num: data.num,
+        type: data.type
+      };
+      db.collection(collection).updateOne(origin, {$set: data}, {upsert: true}, function(err, r) {
+        db.close();
+        if (err) {
+          debug(err);
+          reject(err);
+        } else {
+          resolve(r);
+        }
+      });
+    });
+  });
+};
+
+let updateChapter = function (collection, data) {
+  return new Promise(function (resolve, reject) {
+    connect().then(function (db) {
+      let origin = {
+        num: data.num
+      };
+      db.collection(collection).updateOne(origin, {$set: data}, {upsert: true}, function(err, r) {
         db.close();
         if (err) {
           debug(err);
@@ -107,7 +146,7 @@ function getBookInfo(num, index) {
     current_book.cover = $("#fmimg img").attr("data-cfsrc");
     current_book.chapterCount = urls.length;
     let x = [];
-    let insertBook = insert("biquku", current_book).then(function () {
+    let insertBook = updateBook("biquku", current_book).then(function () {
       debug("插入书完成");
     });
     x.push(insertBook);
@@ -132,7 +171,7 @@ function getBookInfo(num, index) {
         var content = $("#content").text();
         //这里做content塞入处理
         chapters.content = content;
-        return insert(current_book.index + "", chapters);
+        return updateChapter(current_book.index + "", chapters);
       })
       .then(function (r) {
         debug("插入 书" + current_book.index + " 章节" + chapters.index + " 成功");
@@ -148,6 +187,5 @@ function getBookInfo(num, index) {
 
 module.exports = function start() {
   // Queue just one URL, with default callback
-  debug("开始爬虫");
   startCrawler("http://www.biquku.com/xiaoshuodaquan");
 };
