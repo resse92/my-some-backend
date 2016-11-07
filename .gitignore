@@ -39,3 +39,4 @@ jspm_packages
 .vscode/
 jsconfig.json
 typings/
+typings.json
