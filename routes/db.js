@@ -5,9 +5,10 @@ const setting = require("../setting.js");
 //Mongodb 支持es6语法的,我好蠢啊
 
 //查询数据
-exports.find = async function (collection, query) {
+exports.find = async function (collection, query, count) {
   let db = await MongoClient.connect(setting.db_url);
-  let r = await db.collection(collection).find(query).toArray();//转成数组后可以直接传给前端,不转数组各种没用
+  let skipCount = isNaN(parseInt(query.index)) ? 0 : parseInt(query.index);
+  let r = await db.collection(collection).find(query).sort({index: 1}).skip(skipCount).limit(parseInt(count)).toArray();//转成数组后可以直接传给前端,不转数组各种没用
   return r;
 };
 
