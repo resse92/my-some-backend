@@ -55,8 +55,6 @@ function getChapter(category, startChapter, limit) {
 function getBookInfo(category, num) {
   // return db.find("biquku", {type: category + ""});
   let r1 = db.find("biquku", {type: category, num: num});
-  let r = r1[0];
-  debug(r);
   // r.cover = setting.crawler_url + r.cover;
   return r1;
 }
