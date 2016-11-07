@@ -12,11 +12,11 @@ router.get("/", (ctx, next) => {
 //根据分类查询分类书籍
 router.get("/:category", async (ctx, next) => {
   let r = await getCategory(0);
-  ctx.body = r + "";
+  ctx.body = r;
 });
 
-router.get("/:category/:book", (ctx, next) => {
-  ctx.body = "getBook";
+router.get("/:category/:book",async (ctx, next) => {
+  ctx.body = await getBookInfo(1);
 });
 
 router.get("/crawler/allbook", (ctx, next) => {
@@ -29,8 +29,8 @@ function getCategory(category) {
   return db.find("biquku", {type: "0"});
 }
 
-function getBookInfo(category, book) {
-  db.find(category + "", {type: category, num: book});
+function getBookInfo(category) {
+  return db.find(category + "", {});
 }
 
 module.exports = router;

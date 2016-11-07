@@ -7,7 +7,7 @@ const setting = require("../setting.js");
 //查询数据
 exports.find = async function (collection, query) {
   let db = await MongoClient.connect(setting.db_url);
-  let r = await db.collection(collection).find(query);
+  let r = await db.collection(collection).find(query).toArray();
   return r;
 };
 
