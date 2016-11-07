@@ -1,6 +1,7 @@
 "use strict";
 
 require("babel-register");//加入babel hook
+require("babel-polyfill");
 const serve = require("koa-static");
 const Koa = require("koa");
 const app = new Koa();

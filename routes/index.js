@@ -5,14 +5,14 @@ const db = require("./db.js");
 const debug = require("debug")("chapter-one");
 
 router.get("/", (ctx, next) => {
-  debug("here");
-  ctx.body = getCategory(0);
+  debug("开始");
+  ctx.body = "接收到了";
 });
 
 //根据分类查询分类书籍
-router.get("/:category", (ctx, next) => {
-  debug("here");
-  ctx.body = getCategory(0);
+router.get("/:category", async (ctx, next) => {
+  let r = await getCategory(0);
+  ctx.body = r + "";
 });
 
 router.get("/:category/:book", (ctx, next) => {
@@ -25,7 +25,8 @@ router.get("/crawler/allbook", (ctx, next) => {
 });
 
 function getCategory(category) {
-  db.find("biquku", {type: category + ""});
+  // return db.find("biquku", {type: category + ""});
+  return db.find("biquku", {type: "0"});
 }
 
 function getBookInfo(category, book) {

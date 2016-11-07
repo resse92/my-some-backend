@@ -1,34 +1,16 @@
 const MongoClient = require("mongodb").MongoClient;
-const debug = require("debug")("db");
+const debug = require("debug")("book");
 const setting = require("../setting.js");
-//数据库连接
-let connect = function () {
-  return new Promise(function (resolve, reject) {
-    MongoClient.connect(setting.db_url, function(err, db) {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(db);
-      }
-    });
-  });
+
+//Mongodb 支持es6语法的,我好蠢啊
+
+//查询数据
+exports.find = async function (collection, query) {
+  let db = await MongoClient.connect(setting.db_url);
+  let r = await db.collection(collection).find(query);
+  return r;
 };
-//插入数据
-exports.find = function (collection, query) {
-  return new Promise(function (resolve, reject) {
-    connect().then(function (db) {
-      db.collection(collection).find(query, function(err, r) {
-        db.close();
-        if (err) {
-          debug(err);
-          reject(err);
-        } else {
-          resolve(r);
-        }
-      });
-    });
-  });
-};
+
 //
 exports.update = function (collection, origin, data) {
   return new Promise(function (resolve, reject) {
