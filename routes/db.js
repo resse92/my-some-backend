@@ -2,7 +2,14 @@ const MongoClient = require("mongodb").MongoClient;
 const debug = require("debug")("book");
 const setting = require("../setting.js");
 
-//Mongodb 支持es6语法的,我好蠢啊
+const mongoose = require("mongoose");
+mongoose.Promise = global.Promise;
+
+mongoose.connect(setting.db_url);
+const connection = mongoose.connection;
+connection.on('error', (err) => {
+  debug(err);
+})
 
 //查询数据
 exports.find = async function (collection, query, count) {

@@ -15,6 +15,13 @@ const views = require("koa-views");
 const setting = require("./setting.js");
 const debug = require("debug")("app");
 const router = require("./routes/index.js");
+const convert = require("koa-convert");
+
+// ---------- override app.use method  middleware migrate to v2.x----------
+
+const _use = app.use;
+app.use = x => _use.call(app, convert(x));
+// ---------- override app.use method end ----------
 
 // Must be used before any router is used
 app.use(serve(path.join(__dirname, "public")));
