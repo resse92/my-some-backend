@@ -18,7 +18,6 @@ const router = require("./routes/index.js");
 const convert = require("koa-convert");
 
 // ---------- override app.use method  middleware migrate to v2.x----------
-
 const _use = app.use;
 app.use = x => _use.call(app, convert(x));
 // ---------- override app.use method end ----------

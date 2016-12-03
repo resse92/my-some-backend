@@ -1,6 +1,6 @@
 "use strict";
 const router = require("koa-router")();
-const crawler = require("./crawler.js");
+const crawler = require("./crawler1.js");
 const db = require("./db.js");
 const debug = require("debug")("chapter-one");
 const setting = require("../setting.js");
@@ -32,7 +32,7 @@ router.get("/:category/:num", async (ctx, next) => {
 });
 
 //取得章节
-router.get("/book/:bookNum/:startChapter",async (ctx, next) => {
+router.get("/book/:bookNum/:startChapter", async (ctx, next) => {
   if (ctx.params.bookNum === "crawler") {
     next();
     return;
@@ -49,7 +49,7 @@ function getChapter(category, startChapter, limit) {
   if (isNaN(parseInt(startChapter))) {
     return "startChapter参数错误";
   }
-  return db.find(category + "", {index: {"$gte": parseInt(startChapter)}}, limit)
+  return db.find(category + "", {index: {$gte: parseInt(startChapter)}}, limit);
 }
 
 function getBookInfo(category, num) {
