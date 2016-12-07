@@ -152,9 +152,11 @@ async function getHomePage() {
         let c = {};
         let content = contents[y];
         let name = $(content).children("a").text();
+        let src = $(content).children("a").attr("href");
         let author = $(content).text().replace(name, "");
         c.title = name;
         c.author = author;
+        c.src = src;
         categoryRes.push(c);
       }
       categoryReses.push(categoryRes);
