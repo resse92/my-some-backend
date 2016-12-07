@@ -1,13 +1,18 @@
 "use strict";
 const router = require("koa-router")();
-const crawler = require("./crawler1.js");
+const crawler = require("./crawler-async.js");
 const db = require("./db.js");
 const debug = require("debug")("chapter-one");
 const setting = require("../setting.js");
 
-router.get("/", (ctx, next) => {
+router.get("/", async (ctx, next) => {
   debug("开始");
-  ctx.body = "接收到了";
+  let res = await crawler.crawlerHomePage();
+  ctx.res.setHeader("Access-Control-Allow-Origin", "http://localhost:8080");
+  ctx.res.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  ctx.res.setHeader("Access-Control-Allow-Methods", "PUT,POST,GET,DELETE,OPTIONS");
+  //Access-Control-Allow-Origin: *
+  ctx.body = res;
 });
 
 //根据分类查询分类书籍
@@ -17,7 +22,7 @@ router.get("/:category", async (ctx, next) => {
 });
 
 router.get("/crawler/allbook", (ctx, next) => {
-  crawler();
+  crawler.crawlerAll("http://www.biquku.com/xiaoshuodaquan");
   ctx.body = "开始爬虫全部书籍";
 });
 

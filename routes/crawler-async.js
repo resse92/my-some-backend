@@ -8,14 +8,14 @@ const mongoose = require("mongoose");
 let book = require("./models/book.js");
 let chapter = require("./models/chapter.js");
 
-mongoose.connect(setting.db_url);
-const db = mongoose.connection;
+// mongoose.connect(setting.db_url);
+// const db = mongoose.connection;
 // 连接数据库成功或者失败这里回调
-db.on("error", console.error.bind(console, "connection error:"));
-db.once("open", () => {
-  // 成功回调
-  debug("连接数据库成功");
-});
+// db.on("error", console.error.bind(console, "connection error:"));
+// db.once("open", () => {
+//   // 成功回调
+//   debug("连接数据库成功");
+// });
 
 //爬虫
 let crawler = function (url) {
@@ -36,7 +36,7 @@ let crawler = function (url) {
   });
 };
 
-//爬虫开始入口
+// 爬虫所有书籍开始入口
 function startCrawler (url) {
   crawler(url).then(async function ($) {
     let urls = $(".novellist");
@@ -124,7 +124,88 @@ function getBookInfo(num, index) {
   });
 }
 
-module.exports = function start() {
+async function getHomePage() {
+  let res = await crawler("http://www.37zw.com/").then(function($) {
+    let res = {};
+    //获取热门
+    let hot = $("#hotcontent").children(".l").children(".item");
+    let hotRes = [];
+    for (let x = 0; x < hot.length; x++) {
+      let i = hot[x];
+      let rec = {};
+      rec.book_src = $(i).children(".image").children("a").attr("href");
+      rec.cover = $(i).children(".image").children("a").children("img").attr("data-cfsrc");
+      rec.title = $(i).children("dl").children("dt").children("a").text();
+      rec.author = $(i).children("dl").children("dt").children("span").text();
+      rec.intro = $(i).children("dl").children("dd").text();
+      hotRes.push(rec);
+    }
+
+    // 获取各分类书籍
+    let categoryReses = [];
+    let lists = $(".novelslist").children(".content").children("ul");
+    for (let x = 0; x < lists.length; x++) {
+      let categoryRes = [];
+      let list = lists[x];
+      let contents = $(list).children("li");
+      for (let y = 0; y < contents.length; y++) {
+        let c = {};
+        let content = contents[y];
+        let name = $(content).children("a").text();
+        let author = $(content).text().replace(name, "");
+        c.title = name;
+        c.author = author;
+        categoryRes.push(c);
+      }
+      categoryReses.push(categoryRes);
+    }
+
+    // 获取最新更新列表
+    let latestUpdates = [];
+    let latests = $("div#newscontent>.l>ul>li");
+    for (let x = 0; x < latests.length; x ++) {
+      let c = {};
+      let latest = latests[x];
+      c.category = $(latest).children(".s1").text();
+      c.title = $(latest).children(".s2").text();
+      c.book_src = $(latest).children(".s2").children("a").attr("href");
+      c.chapter_src = $(latest).children(".s3").children("a").attr("href");
+      c.chapter = $(latest).children(".s3").children("a").text();
+      c.author = $(latest).children(".s4").text();
+      c.date = $(latest).children(".s5").text();
+      latestUpdates.push(c);
+    }
+
+    // 获取最新入库小说
+    let latestBook = [];
+    let latestBooks = $("div#newscontent>.r>ul>li");
+    for (let x = 0; x < latestBooks.length; x ++) {
+      let c = {};
+      let latest = latestBooks[x];
+      c.title = $(latest).children(".s2").text();
+      c.book_src = $(latest).children(".s2").children("a").attr("href");
+      c.author = $(latest).children(".s5").text();
+      latestBook.push(c);
+    }
+    return {
+      hot: hotRes,
+      category: categoryReses,
+      latest_update: latestUpdates,
+      latest_book: latestBook
+    };
+  }).catch(function(err) {
+    debug(err);
+    return ("数据错误");
+  });
+  return res;
+}
+
+
+module.exports.crawlerAll = function start(url) {
   // Queue just one URL, with default callback
-  startCrawler("http://www.biquku.com/xiaoshuodaquan");
+  startCrawler(url);
 };
+
+module.exports.crawlerOneBook = getBookInfo;
+
+module.exports.crawlerHomePage = getHomePage;

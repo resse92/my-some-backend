@@ -16,6 +16,7 @@ const setting = require("./setting.js");
 const debug = require("debug")("app");
 const router = require("./routes/index.js");
 const convert = require("koa-convert");
+const cors = require("koa-cors");
 
 // ---------- override app.use method  middleware migrate to v2.x----------
 const _use = app.use;
@@ -31,6 +32,8 @@ app.use(compress({
   threshold: 2048,
   flush: require("zlib").Z_SYNC_FLUSH
 }));
+
+app.use(cors());
 
 app.use(favicon(path.join(__dirname, "public", "favicon.ico")));
 

@@ -185,7 +185,7 @@ function getBookInfo(num, index) {
   });
 }
 
-module.exports = function start() {
+module.exports = function start(url) {
   // Queue just one URL, with default callback
   startCrawler("http://www.biquku.com/xiaoshuodaquan");
 };
