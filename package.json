@@ -6,7 +6,7 @@
   "scripts": {
     "start": "DEBUG=chapter-one,book,app nodemon app.js",
     "dev": "http-server dist -o",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": ""
   },
   "author": "alexzhu",
   "license": "ISC",
