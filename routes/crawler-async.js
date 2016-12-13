@@ -8,14 +8,14 @@ const mongoose = require("mongoose");
 let book = require("./models/book.js");
 let chapter = require("./models/chapter.js");
 
-// mongoose.connect(setting.db_url);
-// const db = mongoose.connection;
-// 连接数据库成功或者失败这里回调
-// db.on("error", console.error.bind(console, "connection error:"));
-// db.once("open", () => {
-//   // 成功回调
-//   debug("连接数据库成功");
-// });
+mongoose.connect(setting.db_url);
+const db = mongoose.connection;
+//连接数据库成功或者失败这里回调;
+db.on("error", console.error.bind(console, "connection error:"));
+db.once("open", () => {
+  // 成功回调
+  debug("连接数据库成功");
+});
 
 //爬虫
 let crawler = function (url) {
