@@ -5,6 +5,7 @@
   "main": "./src/routes/index.js",
   "scripts": {
     "start": "DEBUG=chapter-one,book,app nodemon app.js",
+    "prod": "node app.js",
     "dev": "http-server dist -o",
     "test": ""
   },
