@@ -25,6 +25,4 @@ install:
 - npm install pm2 -g
 - npm install
 script:
-- hexo clean
-- hexo g
-- hexo d
+- npm run prod
