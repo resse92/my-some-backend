@@ -1,0 +1,5 @@
+Host 202.5.19.112
+User git
+StrictHostKeyChecking no
+IdentityFile ~/.ssh/id_rsa
+IdentitiesOnly yes
