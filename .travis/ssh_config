@@ -1,5 +1,6 @@
-Host 202.5.19.112
-User git
-StrictHostKeyChecking no
-IdentityFile ~/.ssh/id_rsa
-IdentitiesOnly yes
+Host novel
+  User git
+  HostName 202.5.19.112
+  StrictHostKeyChecking no
+  IdentityFile ~/.ssh/id_rsa
+  IdentitiesOnly yes
