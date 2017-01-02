@@ -10,13 +10,13 @@ branches:
 cache:
   directories:
   - node_modules
-# before_install:
-# - openssl aes-256-cbc -K $encrypted_4e2bde362aa7_key -iv $encrypted_4e2bde362aa7_iv
-#   -in id_rsa.enc -out id_rsa -d
-# - chmod 600 ~/.ssh/id_rsa
-# - eval $(ssh-agent)
-# - ssh-add ~/.ssh/id_rsa
-# - cp .travis/ssh_config ~/.ssh/config
+before_install:
+- openssl aes-256-cbc -K $encrypted_cb1b65bfda52_key -iv $encrypted_cb1b65bfda52_iv
+  -in ./.travis/id_rsa.enc -out ./.travis/id_rsa -d
+- chmod 600 ~/.ssh/id_rsa
+- eval $(ssh-agent)
+- ssh-add ~/.ssh/id_rsa
+- cp .travis/ssh_config ~/.ssh/config
 install:
 - npm install pm2 -g
 - npm install
@@ -24,12 +24,10 @@ script:
 # - npm run prod
 
 after_success:
-    - sshpass -e ssh  $DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH/post-reveive.sh
-
-addons:
-    apt:
-        packages:
-            - sshpass
+    - eval "$(ssh-agent -s)"
+    - ssh-add ~/.ssh/travis_deploy
+    - git remote add deploy git@github.com:zhuruliang/novel-crawler.git
+    - git push deploy
 
 #以下是通过travis进行加密的一些ssh vps的消息
 env:
