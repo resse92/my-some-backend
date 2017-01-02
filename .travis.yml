@@ -10,17 +10,31 @@ branches:
 cache:
   directories:
   - node_modules
-before_install:
-- openssl aes-256-cbc -K $encrypted_4e2bde362aa7_key -iv $encrypted_4e2bde362aa7_iv
-  -in id_rsa.enc -out id_rsa -d
-- chmod 600 ~/.ssh/id_rsa
-- eval $(ssh-agent)
-- ssh-add ~/.ssh/id_rsa
-- cp .travis/ssh_config ~/.ssh/config
-- git config --global user.name 'your name'
-- git config --global user.email your email
+# before_install:
+# - openssl aes-256-cbc -K $encrypted_4e2bde362aa7_key -iv $encrypted_4e2bde362aa7_iv
+#   -in id_rsa.enc -out id_rsa -d
+# - chmod 600 ~/.ssh/id_rsa
+# - eval $(ssh-agent)
+# - ssh-add ~/.ssh/id_rsa
+# - cp .travis/ssh_config ~/.ssh/config
 install:
 - npm install pm2 -g
 - npm install
 script:
-- npm run prod
+# - npm run prod
+
+after_success:
+    - sshpass -e ssh  $DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH/post-reveive.sh
+
+addons:
+    apt:
+        packages:
+            - sshpass
+
+#以下是通过travis进行加密的一些ssh vps的消息
+env:
+  global:
+  - secure: i45490Puq9wA2RRjuvvZb6E0ypyWINbWOF9q4fUAgNd2t0mKYlDXA372Y9JZ9VjK5atMdwusYX+VcXQXCbzKW2rVvWQWhq1ZRffT0m7OPMawjwfchHRepoflJpZZCJ4rkHZfmf4XGA/QNhtl1uu2kkrGc2G1KUkfg0D9tWZd6i2JX4F8Dp5ezc+7JkWfWkZInXTpsCBdq580Ugtus3efeWQo4NsNnJs33aVHrUyqwc9m6r95paEQl633F0VYL1EZgL6s/MoiR6nCPLZXiAI/xrUbwVmdlmMh4OeWIkc4lkRF2k3Hwj4O6xCwfBVqbywD/8LDU3/L09PhoV5zHsDgsh7IjNU6+YGTeL2lETaU/tskvEsuKDzfweCPoV+7kBx88Hd3vVk5rMUbWC1dO0PodAnfY0gm+Eh7U6ezJ0twwoqYByqHaOglglFKoegNJlQA+FK0akQ2bcKCfiSHy0aHP0+998NT8qM8XNeLc37B76bAM6qdYuPmyE54Zv9rIq1qVCeW3CDGczJXLsjtlq78hvCXIMYj23h0e1wVwrTanOo8I/2MWfxdPOSz/P0LKgTXMfJ8Ut4cTd/RUiDbibbNd1ZW1h2ByDBiJIx6V1rRulunHNRJX0Sq6eDyf5UDG8stRlK3dLsZWvclbLMlXUZ1U8iMXVh03q+hcJ7zX6xQfuc=
+  - secure: fFV/0RPX4tmR00aAkQoF2vUTcwX7ESPpA+Mg52Lz3W4h3eJFdOUMJ6BnASS03XDxTwLLRLNof7xbu/C7H6QLUMSDbKz7hn2yT4aKNR647fLf2L1y+xTHQyEy2reZbJWKwUgyy/j6xcQ8sHF8M+cwy6EFUFjBCWo/gJS9CfKFIL8u44WyC+Z0LMfrO7CYadLJoNs0JQPQeM+Eqvns/X3QmanuYNntOadZgmBkM3WgRNWTik2ZS1Og3toFhVCilWpXKg/cm3gLTSpHCX6GQpES8j7wqVgaGpuPqx/2zz40UiUNuBONHloQWkALyVhZgIASF7QR9T7SwJtb/OGSbH0N8uGRBp2zmlaH4Lznj/9Wau/xLUcrGZaqt7SPZFTo50ffpd4cYXCIudWr93PMjWlJnzpQ3Ohnx5i5b45beeC2zG53auuvGTtRjeNzfi3NE0owqnbPQFjRyy/PVAn7j2b2bBHszf6+AcbLxkSdjZ26LMJXR5602mN4j9RNUt5w2YC9ggwmxrq4LOaENeYZ7eQL+lPbS3Szl6T6srQ2bnNzK7mfHCHc7hHSV0rAfwJxShrX4hWPcyBoB6wehgwFc225lsUEKijTO0mmeWwH7MV19yAcmXK2iryeYrCQL1S4TIXtPWjOwcPc4W1+akW7OkZ2xw2iKwe6IykyJXTLe7jj37g=
+  - secure: ThmCZPaT32GuRG0xnZGJCSi61+1knV+h+8xawc+I/aQqKX4I0SsyypiiFWUYkFnESLyWvZk6HoPXz62tATcHIKNnU2VrhlwfVVv9fw/2fr8//BWt+oWJsjDLAs/FSByfDOy2hgUPtWG47DuwepohbRUk5P3QT5Li8dj/mFGWMmPVMrLGgqR/qukPe7s9P9pgxpQbrsQC4J1jDCJRGqByNeuiyJlG28fZzxMQprhGYTGmoieeDQLPAz6vHRlS5ifaOKEx75JpbOCO235o/FnHpp2Id8jixXMrWlwZUV7NORPSXo1skePR0H+SIkLqOxtxHo0o2ngYQgM8+0L4ZLYE5VQMC05GhbvVlxeLXYTvZHHX99TfMUenjNHv4d0Yei6J/SWNqKOPuG2ypoCPWyr2DNW0LyU55km+MiNOdBMjRIBlrU21811xGmWkOoXu/h2UkP74Onu42iVxlQwAl386Gp/XU6ng4Z78w0eSQFUOZfvM3XBXnEbZtcMzkf7jjkgESpyvuaz8BwTfKbNInVYknSmmzOJeq15KHUyTeHmbROSalAxN6CMyV9R8EVrUYLsJQarO2yqym0lHMLVDW0Y3PRxeZxN7TvqZWQNF7mZJgVOls7Bo2Rv9F4SD/znqTFL/627Shgw1dd8DS9O8S/IjrDWHPsExZO2bNZHydCR5Dts=
+  - secure: m+fwXxSUV6H3wZMB0vK4ZDF2/SvmoKwa0rF+fLZVkS64qwtDgilHagngnmzf2jJ2582ouk1S3+K/P0t0Enfo61QNmLSW0/AcaVzn9/jBWw8T4ifRbViWt0rzDhHVgNmcJ/nMM95LmDhO5w1T61PaPG/F6fuMOl2hzCStpWT28K1jBlibNuZRQJYU5qj/AvM1BOXQsdsy/fKf829T5kbnKyN9IlAHL8bilEJC09vSJZwiFrFPCoRbzS4Dn9Phcjw1fs2Hylhpt56foFmes50r8bwveDkn0aGM2g2dM8UmJPxaaL9JIqdu2nCOZinnRCJrkK/if3fISZVJiZSJ8VZcLTG3X+vuc9ux6LK9Ge/73+SLFSAutSzEKO2Q6H1vE+YHOsLAiFtgehnf2yS+DZ7wFYiPmSsdIc4WMBbe9VVEQLXSGJ8ZB/0J3/Se7kFakz8JTWzW/uxIBVJ8svUTakGVfOUTNI09t2o1wyyzBxEVOBn/RBHjQu4Noy85XMuLK6bHLgPfB0Jfdz51I8eB7kBOmlalHg6kJyzhDe38MhbzMi03EPfJ+uxoOKsaW3ye+pUG1YcawUKVZkIWJrteQKfVq7E3YUEdK0i3WU5A68Qo4V26MymBg6fZWDPWlx7yfEa7yRvVXMXf5pvcDpiJ44PoKIUQL4N6K4sI4wcPtkKwDX0=
