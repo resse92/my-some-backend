@@ -1,4 +1,4 @@
-Host 202.5.19.112
+Host github.com
   User git
   StrictHostKeyChecking no
   IdentityFile ~/.ssh/travis_deploy
