@@ -23,7 +23,7 @@ script:
 after_success:
 - eval "$(ssh-agent -s)"
 - ssh-add ~/.ssh/travis_deploy
-- git remote add deploy root@202.5.19.112:/root/project/novel.git
+- git remote add deploy alexzhu@202.5.19.112:/root/project/novel.git
 - git push deploy
 env:
   global:
