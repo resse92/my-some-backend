@@ -12,7 +12,7 @@ cache:
   - node_modules
 before_install:
 - openssl aes-256-cbc -K $encrypted_3f91eae9a3ab_key -iv $encrypted_3f91eae9a3ab_iv
-  -in id_rsa.enc -out travis_deploy -d
+  -in .travis/id_rsa.enc -out .travis/id_rsa -d
 - chmod 600 .travis/id_rsa
 - cp .travis/id_rsa ~/.ssh/travis_deploy
 - cp .travis/ssh_config ~/.ssh/config
