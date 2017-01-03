@@ -2,6 +2,6 @@ Host novel
   User git
   HostName 202.5.19.112
   StrictHostKeyChecking no
-  IdentityFile ~/.ssh/id_rsa
+  IdentityFile ~/.ssh/travis_deploy
   IdentitiesOnly yes
   UserKnownHostsFile /dev/null
