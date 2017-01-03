@@ -11,23 +11,20 @@ cache:
   directories:
   - node_modules
 before_install:
-- openssl aes-256-cbc -K $encrypted_4e2bde362aa7_key -iv $encrypted_4e2bde362aa7_iv -in .travis/id_rsa.enc -out .travis/id_rsa -d
+- openssl aes-256-cbc -K $encrypted_3f91eae9a3ab_key -iv $encrypted_3f91eae9a3ab_iv
+  -in id_rsa.enc -out id_rsa -d
 - chmod 600 .travis/id_rsa
 - cp .travis/id_rsa ~/.ssh/travis_deploy
 - cp .travis/ssh_config ~/.ssh/config
 install:
 - npm install pm2 -g
 - npm install
-script:
-# - npm run prod
-
+script: 
 after_success:
-    - eval "$(ssh-agent -s)"
-    - ssh-add ~/.ssh/travis_deploy
-    - git remote add deploy git@github.com:zhuruliang/novel-crawler.git
-    - git push deploy
-
-#以下是通过travis进行加密的一些ssh vps的消息
+- eval "$(ssh-agent -s)"
+- ssh-add ~/.ssh/travis_deploy
+- git remote add deploy git@github.com:zhuruliang/novel-crawler.git
+- git push deploy
 env:
   global:
   - secure: i45490Puq9wA2RRjuvvZb6E0ypyWINbWOF9q4fUAgNd2t0mKYlDXA372Y9JZ9VjK5atMdwusYX+VcXQXCbzKW2rVvWQWhq1ZRffT0m7OPMawjwfchHRepoflJpZZCJ4rkHZfmf4XGA/QNhtl1uu2kkrGc2G1KUkfg0D9tWZd6i2JX4F8Dp5ezc+7JkWfWkZInXTpsCBdq580Ugtus3efeWQo4NsNnJs33aVHrUyqwc9m6r95paEQl633F0VYL1EZgL6s/MoiR6nCPLZXiAI/xrUbwVmdlmMh4OeWIkc4lkRF2k3Hwj4O6xCwfBVqbywD/8LDU3/L09PhoV5zHsDgsh7IjNU6+YGTeL2lETaU/tskvEsuKDzfweCPoV+7kBx88Hd3vVk5rMUbWC1dO0PodAnfY0gm+Eh7U6ezJ0twwoqYByqHaOglglFKoegNJlQA+FK0akQ2bcKCfiSHy0aHP0+998NT8qM8XNeLc37B76bAM6qdYuPmyE54Zv9rIq1qVCeW3CDGczJXLsjtlq78hvCXIMYj23h0e1wVwrTanOo8I/2MWfxdPOSz/P0LKgTXMfJ8Ut4cTd/RUiDbibbNd1ZW1h2ByDBiJIx6V1rRulunHNRJX0Sq6eDyf5UDG8stRlK3dLsZWvclbLMlXUZ1U8iMXVh03q+hcJ7zX6xQfuc=
