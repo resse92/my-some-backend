@@ -1,5 +1,5 @@
 Host 202.5.19.112
-  User git
+  User root
   StrictHostKeyChecking no
   IdentityFile ~/.ssh/travis_deploy
   IdentitiesOnly yes
