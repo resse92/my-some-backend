@@ -26,6 +26,11 @@ router.get("/crawler/allbook", (ctx, next) => {
   ctx.body = "开始爬虫全部书籍";
 });
 
+router.get("/search/:keyword", (ctx, next) => {
+  debug("search");
+  crawler.search(ctx.params.keyword);
+});
+
 //查询书籍信息
 router.get("/:category/:num", async (ctx, next) => {
   if (ctx.params.category === "book") {

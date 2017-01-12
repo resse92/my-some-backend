@@ -202,6 +202,26 @@ async function getHomePage() {
   return res;
 }
 
+async function search(keyword) {
+  let res = [];
+  for (let i = 0; i < 3; i++) {
+    await crawler("http://so.37zw.com/cse/search?s=2041213923836881982&q=" + keyword + "&p=" + i).then(function ($) {
+      let resultList = $("div#results>div.result-list");
+      for (let result in $(resultList).children("div.result-item")) {
+        if (resultList.hasOwnProperty(result)) {
+          var element = resultList[result];
+          let res = {};
+          res.img = $(element).find("a.result-game-item-pic-link").attr("href");
+          res.title = $(element).find("#results > div.result-list > div:nth-child(1) > div.result-game-item-detail > h3").text();
+          res.intro = $(element).find("p.result-game-item-desc").text();
+          debug(res);
+        }
+      }
+    }).catch(function (err) {
+      debug(err);
+    });
+  }
+}
 
 module.exports.crawlerAll = function start(url) {
   // Queue just one URL, with default callback
@@ -211,3 +231,5 @@ module.exports.crawlerAll = function start(url) {
 module.exports.crawlerOneBook = getBookInfo;
 
 module.exports.crawlerHomePage = getHomePage;
+
+module.exports.search = search;
