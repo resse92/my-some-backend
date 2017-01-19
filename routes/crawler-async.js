@@ -9,6 +9,13 @@ let book = require("./models/book.js");
 let chapter = require("./models/chapter.js");
 
 mongoose.connect(setting.db_url);
+
+process.on("SIGINT", function() {
+  mongoose.disconnect(function (err) {
+    debug(err);
+  });
+  debug("Got SIGINT.  Press Control-D/Control-C to exit.");
+});
 const db = mongoose.connection;
 //连接数据库成功或者失败这里回调;
 db.on("error", console.error.bind(console, "connection error:"));

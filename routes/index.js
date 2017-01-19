@@ -1,7 +1,7 @@
 "use strict";
 const router = require("koa-router")();
 const crawler = require("./crawler-async.js");
-const db = require("./db.js");
+// const db = require("./db.js");
 const debug = require("debug")("chapter-one");
 const setting = require("../setting.js");
 
@@ -50,23 +50,23 @@ router.get("/book/:bookNum/:startChapter", async (ctx, next) => {
   ctx.body = await getChapter(ctx.params.bookNum, ctx.params.startChapter, ctx.query.count);
 });
 
-function getCategory(category) {
+// function getCategory(category) {
   // return db.find("biquku", {type: category + ""});
-  return db.find("biquku", {type: category});
-}
+  // return db.find("biquku", {type: category});
+// }
 
-function getChapter(category, startChapter, limit) {
-  if (isNaN(parseInt(startChapter))) {
-    return "startChapter参数错误";
-  }
-  return db.find(category + "", {index: {$gte: parseInt(startChapter)}}, limit);
-}
+// function getChapter(category, startChapter, limit) {
+//   if (isNaN(parseInt(startChapter))) {
+//     return "startChapter参数错误";
+//   }
+  // return db.find(category + "", {index: {$gte: parseInt(startChapter)}}, limit);
+// }
 
-function getBookInfo(category, num) {
+// function getBookInfo(category, num) {
   // return db.find("biquku", {type: category + ""});
-  let r1 = db.find("biquku", {type: category, num: num});
+  // let r1 = db.find("biquku", {type: category, num: num});
   // r.cover = setting.crawler_url + r.cover;
-  return r1;
-}
+  // return r1;
+// }
 
 module.exports = router;
