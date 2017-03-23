@@ -10,14 +10,16 @@ let chapter = require("./models/chapter.js");
 
 mongoose.connect(setting.db_url);
 
-process.on("SIGINT", function() {
-  mongoose.disconnect(function (err) {
-    debug(err);
-  });
-  debug("Got SIGINT.  Press Control-D/Control-C to exit.");
-});
+// 拦截退出信号
+  // process.on("SIGINT", function() {
+  //   mongoose.disconnect(function (err) {
+  //     debug(err);
+  //   });
+  //   debug("Got SIGINT.  Press Control-D/Control-C to exit.");
+  // });
+
 const db = mongoose.connection;
-//连接数据库成功或者失败这里回调;
+// 连接数据库成功或者失败这里回调;
 db.on("error", console.error.bind(console, "connection error:"));
 db.once("open", () => {
   // 成功回调
@@ -32,12 +34,13 @@ let crawler = function (url) {
       maxConnections: 1000,
       forceUTF8: true,
       // This will be called for each crawled page
-      callback: function(err, result, $) {
+      callback: function(err, res, done) {
         if (err) {
           reject(err);
         } else {
-          resolve($);
+          resolve(res.$);
         }
+        done();
       }
     }]);
   });
@@ -118,6 +121,7 @@ function getBookInfo(num, index) {
         let origin = {
           index: i
         };
+        // 插入章节
         return chaptersModel.update(origin, {$set: chapters}, {upsert: true}).exec();
       }).then(function (r) {
         debug("插入 书" + current_book.index + " 章节" + chapters.index + " 成功");
