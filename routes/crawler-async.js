@@ -136,6 +136,7 @@ function getBookInfo(num, index) {
 }
 
 async function getHomePage() {
+
   let res = await crawler("http://www.37zw.com/").then(function($) {
     let res = {};
     //获取热门
@@ -213,25 +214,107 @@ async function getHomePage() {
   return res;
 }
 
-async function search(keyword) {
-  let res = [];
-  for (let i = 0; i < 3; i++) {
-    await crawler("http://so.37zw.com/cse/search?s=2041213923836881982&q=" + keyword + "&p=" + i).then(function ($) {
-      let resultList = $("div#results>div.result-list");
-      for (let result in $(resultList).children("div.result-item")) {
-        if (resultList.hasOwnProperty(result)) {
-          var element = resultList[result];
-          let res = {};
-          res.img = $(element).find("a.result-game-item-pic-link").attr("href");
-          res.title = $(element).find("#results > div.result-list > div:nth-child(1) > div.result-game-item-detail > h3").text();
-          res.intro = $(element).find("p.result-game-item-desc").text();
-          debug(res);
-        }
-      }
-    }).catch(function (err) {
-      debug(err);
-    });
+async function getCategory(category, index) {
+  let uri = {
+    xuanhuan: 'xiaoshuo1',
+    xiuzhen: 'xiaoshuo2',
+    dushi: 'xiaoshuo3',
+    chuanyue: 'xiaoshuo4',
+    wangyou: 'xiaoshuo5',
+    kehuan: 'xiaoshuo6'
   }
+  
+  return await crawler('http://www.37zw.com/' + uri[category] + '/index' + index + '.html').then(function($) {
+    // 获取数据
+    let x = $('#hotcontent > div.ll').children('div.item')
+    let res = [];
+    for (let index = 0; index < x.length; index++) {
+      let element = x[index];
+      let oneRes = {};
+      //取出所有图片
+      oneRes['image'] = $(element).children('.image').children('a').children('img').attr('src')
+      oneRes['title'] = $(element).find('dl > dt > span').text()
+      oneRes['author'] = $(element).find('dl > dt > a').text()
+      oneRes['link'] = $(element).find('dl > dt > a').attr('href')
+      let des = $(element).find('dl > dd').text()
+      if (des.length > 0) {
+        oneRes['description'] = des
+      } else {
+        oneRes['description'] = "暂无内容"
+      }
+      res.push(oneRes)
+    }
+
+    let finalRes = {
+      books: res,
+      totalcount: $('#pagelink > a.last').text()
+    }
+
+    return finalRes
+  }).catch(function (err) {
+    return {error: err};
+  })
+}
+
+async function getBookDetail(mainId, subId) {
+  // cover #fmimg > img
+  // title #info > h1
+  // 作者 #info > p:nth-child(2)
+  // 更新时间 #info > p:nth-child(4)
+  // description #intro > p:nth-child(1)
+  // recommend #listtj children
+  // #list > dl > dd:nth-child(2)
+  let baseURL = 'http://www.37zw.com/'
+  return await crawler(baseURL + mainId + '/' + subId).then(function ($) {
+    let book = {}
+    book.cover = baseURL + $('#fmimg > img').attr('src')
+    book.title = $('#info > h1').text()
+    book.author = $('#info > p:nth-child(2)').text()
+    book.desc = $('#intro > p:nth-child(1)').text()
+    let recomends = $('#listtj').children('a')
+    let book_recommeds = []
+    // 循环加入推荐书籍
+    for (let index = 0; index < recomends.length; index++) {
+      let element = recomends[index];
+      let a = {}
+      a.book = $(element).text()
+      a.link = baseURL + $(element).attr('href')
+      book_recommeds.push(a)
+    }
+    book.recommends = book_recommeds
+
+    let chapters = []
+    let searchChapters = $('#list > dl').children()
+
+    let latestupdate = $('#info > p:nth-child(5) > a')
+    book.latest_update = {
+      link: $(latestupdate).attr('href'),
+      name: $(latestupdate).text()
+    }
+
+    for (let index = 0; index < searchChapters.length; index++) {
+      let element = searchChapters[index];
+      if ($(element).is('dt')) {
+        chapters.push({
+          collect: $(element).text(),
+          chapters: []
+        })
+        continue
+      }
+      let chapterCollect = chapters[chapters.length - 1]
+      let chapter = {}
+      let a = $(element).children('a')
+      chapter.link = $(a).attr('href')
+      chapter.name = $(a).text()
+      chapterCollect.chapters.push(chapter)
+      chapters.splice(chapters.count - 1, 1, chapterCollect)
+      debug(chapter)
+    }
+
+    book.chapters = chapters
+    return book
+  })
+
 }
 
 module.exports.crawlerAll = function start(url) {
@@ -243,4 +326,6 @@ module.exports.crawlerOneBook = getBookInfo;
 
 module.exports.crawlerHomePage = getHomePage;
 
-module.exports.search = search;
+module.exports.crawlerCategory = getCategory;
+
+module.exports.crawlerBookDetail = getBookDetail;

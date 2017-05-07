@@ -15,9 +15,9 @@ router.get("/", async (ctx, next) => {
   ctx.body = res;
 });
 
-//根据分类查询分类书籍
-router.get("/:category", async (ctx, next) => {
-  let r = await getCategory(ctx.params.category);
+// 根据分类查询分类书籍
+router.get("/crawler/:category/:page", async (ctx, next) => {
+  let r = await getCategory(ctx.params.category, ctx.params.page);
   ctx.body = r;
 });
 
@@ -26,34 +26,33 @@ router.get("/crawler/allbook", (ctx, next) => {
   ctx.body = "开始爬虫全部书籍";
 });
 
-router.get("/search/:keyword", (ctx, next) => {
-  debug("search");
-  crawler.search(ctx.params.keyword);
+router.get("/book", async (ctx, next) => {
+  ctx.body = await crawler.crawlerBookDetail(1, 1290);
 });
+
+function getCategory(category, page) {
+  // 先爬虫, 后续再从数据库读取
+  return crawler.crawlerCategory(category, page);
+}
 
 //查询书籍信息
-router.get("/:category/:num", async (ctx, next) => {
-  if (ctx.params.category === "book") {
-    next();
-    return;
-  }
-  let r = await getBookInfo(ctx.params.category, ctx.params.num);
-  ctx.body = r;
-});
+// router.get("/:category/:num", async (ctx, next) => {
+//   if (ctx.params.category === "book") {
+//     next();
+//     return;
+//   }
+//   let r = await getBookInfo(ctx.params.category, ctx.params.num);
+//   ctx.body = r;
+// });
 
 //取得章节
-router.get("/book/:bookNum/:startChapter", async (ctx, next) => {
-  if (ctx.params.bookNum === "crawler") {
-    next();
-    return;
-  }
-  ctx.body = await getChapter(ctx.params.bookNum, ctx.params.startChapter, ctx.query.count);
-});
-
-// function getCategory(category) {
-  // return db.find("biquku", {type: category + ""});
-  // return db.find("biquku", {type: category});
-// }
+// router.get("/book/:bookNum/:startChapter", async (ctx, next) => {
+//   if (ctx.params.bookNum === "crawler") {
+//     next();
+//     return;
+//   }
+//   ctx.body = await getChapter(ctx.params.bookNum, ctx.params.startChapter, ctx.query.count);
+// });
 
 // function getChapter(category, startChapter, limit) {
 //   if (isNaN(parseInt(startChapter))) {
