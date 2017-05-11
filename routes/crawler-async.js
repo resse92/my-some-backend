@@ -264,10 +264,12 @@ async function getBookDetail(mainId, subId) {
   // description #intro > p:nth-child(1)
   // recommend #listtj children
   // #list > dl > dd:nth-child(2)
-  let baseURL = 'http://www.37zw.com/'
-  return await crawler(baseURL + mainId + '/' + subId).then(function ($) {
-    let book = {}
-    book.cover = baseURL + $('#fmimg > img').attr('src')
+  let baseURL = "http://www.37zw.com/";
+  return await crawler(baseURL + mainId + "/" + subId).then(function ($) {
+    let book = {};
+    book.cover = baseURL + $("#fmimg > img").attr("data-cfsrc");
+    // debug($("#fmimg > img"))
+    
     book.title = $('#info > h1').text()
     book.author = $('#info > p:nth-child(2)').text()
     book.desc = $('#intro > p:nth-child(1)').text()
@@ -308,7 +310,7 @@ async function getBookDetail(mainId, subId) {
       chapter.name = $(a).text()
       chapterCollect.chapters.push(chapter)
       chapters.splice(chapters.count - 1, 1, chapterCollect)
-      debug(chapter)
+      // debug(chapter)
     }
 
     book.chapters = chapters
