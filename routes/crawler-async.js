@@ -270,52 +270,54 @@ async function getBookDetail(mainId, subId) {
     book.cover = baseURL + $("#fmimg > img").attr("data-cfsrc");
     // debug($("#fmimg > img"))
     
-    book.title = $('#info > h1').text()
-    book.author = $('#info > p:nth-child(2)').text()
-    book.desc = $('#intro > p:nth-child(1)').text()
-    let recomends = $('#listtj').children('a')
-    let book_recommeds = []
+    book.title = $("#info > h1").text();
+    book.author = $("#info > p:nth-child(2)").text();
+    book.desc = $("#intro > p:nth-child(1)").text();
+    let recomends = $("#listtj").children("a");
+    let book_recommeds = [];
     // 循环加入推荐书籍
     for (let index = 0; index < recomends.length; index++) {
       let element = recomends[index];
-      let a = {}
-      a.book = $(element).text()
-      a.link = baseURL + $(element).attr('href')
-      book_recommeds.push(a)
+      let a = {};
+      a.book = $(element).text();
+      a.link = baseURL + $(element).attr("href");
+      book_recommeds.push(a);
     }
-    book.recommends = book_recommeds
+    book.recommends = book_recommeds;
 
-    let chapters = []
-    let searchChapters = $('#list > dl').children()
+    let chapters = [];
+    let searchChapters = $("#list > dl").children();
 
-    let latestupdate = $('#info > p:nth-child(5) > a')
+    let latestupdate = $("#info > p:nth-child(5) > a");
     book.latest_update = {
-      link: $(latestupdate).attr('href'),
+      link: $(latestupdate).attr("href"),
+      time: $("#info > p:nth-child(4)").text(),
       name: $(latestupdate).text()
-    }
+    };
 
     for (let index = 0; index < searchChapters.length; index++) {
       let element = searchChapters[index];
-      if ($(element).is('dt')) {
+      if ($(element).is("dt")) {
+        debug($(element).text());
         chapters.push({
           collect: $(element).text(),
           chapters: []
-        })
-        continue
+        });
+        continue;
       }
-      let chapterCollect = chapters[chapters.length - 1]
-      let chapter = {}
-      let a = $(element).children('a')
-      chapter.link = $(a).attr('href')
-      chapter.name = $(a).text()
-      chapterCollect.chapters.push(chapter)
-      chapters.splice(chapters.count - 1, 1, chapterCollect)
+      let chapterCollect = chapters[chapters.length - 1];
+      let chapter = {};
+      let a = $(element).children("a");
+      chapter.link = $(a).attr("href");
+      chapter.name = $(a).text();
+      chapterCollect.chapters.push(chapter);
+      // chapters.splice(chapters.count - 1, 1, chapterCollect);
       // debug(chapter)
     }
 
-    book.chapters = chapters
-    return book
-  })
+    book.chapters = chapters;
+    return book;
+  });
 
 }
 
