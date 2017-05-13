@@ -27,7 +27,15 @@ router.get("/crawler/allbook", (ctx, next) => {
 });
 
 router.get("/book/:category/:book", async (ctx, next) => {
+  debug(1);
   ctx.body = await crawler.crawlerBookDetail(ctx.params.category, ctx.params.book);
+});
+
+// 爬虫单个章节
+router.get("/book/:category/:book/:chapter", async (ctx, next) => {
+  // ctx.body = await crawler
+  debug(2);
+  ctx.body = await crawler.crawlerChapter(ctx.params.category, ctx.params.book, ctx.params.chapter);
 });
 
 function getCategory(category, page) {

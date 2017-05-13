@@ -81,7 +81,7 @@ function getBookInfo(num, index) {
   current_book.num = arr[1];
   current_book.index = index;
 
-  return crawler(setting.crawler_url + num).then(function ($) {
+  return crawler(setting.crawler_url + num).then(async function ($) {
       //取得书籍信息
     var urls = $("#list a");
     current_book.name = $("#maininfo h1").text();
@@ -91,7 +91,6 @@ function getBookInfo(num, index) {
     current_book.intro = $("#intro").text();
     current_book.cover = $("#fmimg img").attr("data-cfsrc");
     current_book.chapterCount = urls.length;
-    
     // 插入书籍
     bookmodel.update({index: current_book.index}, {$set: current_book}, {upsert: true}).exec();
 
@@ -99,37 +98,25 @@ function getBookInfo(num, index) {
       var url = urls[i];
 
       var _url = $(url).attr("href") + "";
-      var num = _url.replace(".html", "");// 笔趣库的章节码数，没有存
+      var chapterNum = _url.replace(".html", ""); // 笔趣库的章节码数，没有存
       var title = $(url).text();
 
       let chaptersModel = chapter.model(current_book.num + "");
-      let chapters = chaptersModel({
-        title: title,
+      let chapters = await getChapter(current_book.type, current_book.num, chapterNum);
+      let origin = {
+        index: i
+      };
+      
+      // 插入章节
+      chaptersModel.update(origin, {$set: {
+        title: chapters.title,
+        content: chapters.content,
         url: _url,
-        index: i,
-        content: "暂无章节信息"
-      });
-      
-      crawler(setting.crawler_url + current_book.type + "/" + current_book.num + "/" + num + ".html")
-      .then(($) => {
-        if ($("#content") === null) {
-          debug(current_book + chapters);
-        }
-        var content = $("#content").text();
-        //这里做content塞入处理
-        chapters.content = content;
-        let origin = {
-          index: i
-        };
-        // 插入章节
-        return chaptersModel.update(origin, {$set: chapters}, {upsert: true}).exec();
-      }).then(function (r) {
-        debug("插入 书" + current_book.index + " 章节" + chapters.index + " 成功");
-      }).catch(function(err) {
-        debug(err);
-      });
-      
+        index, i
+      }}, {upsert: true}).exec();
     }
+  }).then(function (r) {
+    debug("插入 书" + current_book.index + " 章节 成功");
   }).catch(function(err) {
     debug(err);
   });
@@ -216,44 +203,44 @@ async function getHomePage() {
 
 async function getCategory(category, index) {
   let uri = {
-    xuanhuan: 'xiaoshuo1',
-    xiuzhen: 'xiaoshuo2',
-    dushi: 'xiaoshuo3',
-    chuanyue: 'xiaoshuo4',
-    wangyou: 'xiaoshuo5',
-    kehuan: 'xiaoshuo6'
-  }
+    xuanhuan: "xiaoshuo1",
+    xiuzhen: "xiaoshuo2",
+    dushi: "xiaoshuo3",
+    chuanyue: "xiaoshuo3",
+    wangyou: "xiaoshuo5",
+    kehuan: "xiaoshuo6"
+  };
   
-  return await crawler('http://www.37zw.com/' + uri[category] + '/index' + index + '.html').then(function($) {
+  return await crawler("http://www.37zw.com/" + uri[category] + "/index" + index + ".html").then(function($) {
     // 获取数据
-    let x = $('#hotcontent > div.ll').children('div.item')
+    let x = $("#hotcontent > div.ll").children("div.item");
     let res = [];
     for (let index = 0; index < x.length; index++) {
       let element = x[index];
       let oneRes = {};
       //取出所有图片
-      oneRes['image'] = $(element).children('.image').children('a').children('img').attr('src')
-      oneRes['title'] = $(element).find('dl > dt > span').text()
-      oneRes['author'] = $(element).find('dl > dt > a').text()
-      oneRes['link'] = $(element).find('dl > dt > a').attr('href').replace("http://www.37zw.net/", "/book/")
-      let des = $(element).find('dl > dd').text()
+      oneRes["image"] = $(element).children(".image").children('a').children('img').attr('src');
+      oneRes["title"] = $(element).find("dl > dt > span").text();
+      oneRes["author"] = $(element).find("dl > dt > a").text();
+      oneRes["link"] = $(element).find("dl > dt > a").attr("href").replace("http://www.37zw.net/", "/book/");
+      let des = $(element).find("dl > dd").text();
       if (des.length > 0) {
-        oneRes['description'] = des
+        oneRes["description"] = des;
       } else {
-        oneRes['description'] = "暂无内容"
+        oneRes["description"] = "暂无内容";
       }
-      res.push(oneRes)
+      res.push(oneRes);
     }
 
     let finalRes = {
       books: res,
-      totalcount: $('#pagelink > a.last').text()
-    }
+      totalcount: $("#pagelink > a.last").text()
+    };
 
-    return finalRes
+    return finalRes;
   }).catch(function (err) {
     return {error: err};
-  })
+  });
 }
 
 async function getBookDetail(mainId, subId) {
@@ -327,6 +314,30 @@ async function getBookDetail(mainId, subId) {
 
 }
 
+async function getChapter(category, index, chapter) {
+  let crawlerChapter = {
+    title: "",
+    content: "暂无章节信息"
+  };
+
+  await crawler(setting.crawler_url + category + "/" + index + "/" + chapter + ".html")
+  .then(($) => {
+    if ($("#content") === null) {
+      // debug(current_book + chapters);
+    }
+    let content = $("#content").text();
+    //这里做content塞入处理
+    crawlerChapter.title = $("#wrapper > div.content_read > div > div.bookname > h1").text();
+    crawlerChapter.content = content;
+    crawlerChapter.lastChapter = $("#wrapper > div.content_read > div > div.bookname > div.bottem1 > a:nth-child(2)").attr("href");
+    crawlerChapter.nextChapter = $("#wrapper > div.content_read > div > div.bookname > div.bottem1 > a:nth-child(4)").attr("href");
+  }).catch(function(err) {
+    debug(err);
+  });
+
+  return crawlerChapter;
+}
+
 module.exports.crawlerAll = function start(url) {
   // Queue just one URL, with default callback
   startCrawler(url);
@@ -339,3 +350,5 @@ module.exports.crawlerHomePage = getHomePage;
 module.exports.crawlerCategory = getCategory;
 
 module.exports.crawlerBookDetail = getBookDetail;
+
+module.exports.crawlerChapter = getChapter;
