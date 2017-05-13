@@ -26,8 +26,8 @@ router.get("/crawler/allbook", (ctx, next) => {
   ctx.body = "开始爬虫全部书籍";
 });
 
-router.get("/book", async (ctx, next) => {
-  ctx.body = await crawler.crawlerBookDetail(1, 1290);
+router.get("/book/:category/:book", async (ctx, next) => {
+  ctx.body = await crawler.crawlerBookDetail(ctx.params.category, ctx.params.book);
 });
 
 function getCategory(category, page) {

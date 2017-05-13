@@ -145,7 +145,7 @@ async function getHomePage() {
     for (let x = 0; x < hot.length; x++) {
       let i = hot[x];
       let rec = {};
-      rec.book_src = $(i).children(".image").children("a").attr("href");
+      rec.book_src = $(i).children(".image").children("a").attr("href").replace("http://www.37zw.net/", "/book/");
       rec.cover = $(i).children(".image").children("a").children("img").attr("data-cfsrc");
       rec.title = $(i).children("dl").children("dt").children("a").text();
       rec.author = $(i).children("dl").children("dt").children("span").text();
@@ -235,7 +235,7 @@ async function getCategory(category, index) {
       oneRes['image'] = $(element).children('.image').children('a').children('img').attr('src')
       oneRes['title'] = $(element).find('dl > dt > span').text()
       oneRes['author'] = $(element).find('dl > dt > a').text()
-      oneRes['link'] = $(element).find('dl > dt > a').attr('href')
+      oneRes['link'] = $(element).find('dl > dt > a').attr('href').replace("http://www.37zw.net/", "/book/")
       let des = $(element).find('dl > dd').text()
       if (des.length > 0) {
         oneRes['description'] = des
@@ -280,7 +280,7 @@ async function getBookDetail(mainId, subId) {
       let element = recomends[index];
       let a = {};
       a.book = $(element).text();
-      a.link = baseURL + $(element).attr("href");
+      a.link = $(element).attr("href");
       book_recommeds.push(a);
     }
     book.recommends = book_recommeds;
@@ -305,10 +305,16 @@ async function getBookDetail(mainId, subId) {
         });
         continue;
       }
+      if (chapters.length === 0) {
+        chapters.push({
+          collect: $(element).text(),
+          chapters: []
+        });
+      }
       let chapterCollect = chapters[chapters.length - 1];
       let chapter = {};
       let a = $(element).children("a");
-      chapter.link = $(a).attr("href");
+      chapter.link = $(a).attr("href").replace();
       chapter.name = $(a).text();
       chapterCollect.chapters.push(chapter);
       // chapters.splice(chapters.count - 1, 1, chapterCollect);
