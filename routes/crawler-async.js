@@ -219,7 +219,7 @@ async function getCategory(category, index) {
       let element = x[index];
       let oneRes = {};
       //取出所有图片
-      oneRes["image"] = $(element).children(".image").children('a').children('img').attr('src');
+      oneRes["image"] = $(element).children(".image").children("a").children("img").attr("data-cfsrc");
       oneRes["title"] = $(element).find("dl > dt > span").text();
       oneRes["author"] = $(element).find("dl > dt > a").text();
       oneRes["link"] = $(element).find("dl > dt > a").attr("href").replace("http://www.37zw.net/", "/book/");
@@ -301,7 +301,7 @@ async function getBookDetail(mainId, subId) {
       let chapterCollect = chapters[chapters.length - 1];
       let chapter = {};
       let a = $(element).children("a");
-      chapter.link = $(a).attr("href").replace();
+      chapter.link = $(a).attr("href").replace(".html", "");
       chapter.name = $(a).text();
       chapterCollect.chapters.push(chapter);
       // chapters.splice(chapters.count - 1, 1, chapterCollect);
@@ -325,12 +325,12 @@ async function getChapter(category, index, chapter) {
     if ($("#content") === null) {
       // debug(current_book + chapters);
     }
-    let content = $("#content").text();
+    let content = $("#content").html();
     //这里做content塞入处理
     crawlerChapter.title = $("#wrapper > div.content_read > div > div.bookname > h1").text();
     crawlerChapter.content = content;
-    crawlerChapter.lastChapter = $("#wrapper > div.content_read > div > div.bookname > div.bottem1 > a:nth-child(2)").attr("href");
-    crawlerChapter.nextChapter = $("#wrapper > div.content_read > div > div.bookname > div.bottem1 > a:nth-child(4)").attr("href");
+    crawlerChapter.lastChapter = $("#wrapper > div.content_read > div > div.bookname > div.bottem1 > a:nth-child(2)").attr("href").replace(".html", "");
+    crawlerChapter.nextChapter = $("#wrapper > div.content_read > div > div.bookname > div.bottem1 > a:nth-child(4)").attr("href").replace(".html", "");
   }).catch(function(err) {
     debug(err);
   });
