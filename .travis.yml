@@ -16,8 +16,8 @@ before_install:
 - cp .travis/id_rsa ~/.ssh/travis_deploy
 - cp .travis/ssh_config ~/.ssh/config
 install:
-- npm install pm2 -g
-- npm install
+# - npm install pm2 -g
+# - npm install
 script:
 after_success:
 - eval "$(ssh-agent -s)"
