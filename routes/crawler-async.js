@@ -18,13 +18,13 @@ mongoose.connect(setting.db_url);
   //   debug("Got SIGINT.  Press Control-D/Control-C to exit.");
   // });
 
-const db = mongoose.connection;
+// const db = mongoose.connection;
 // 连接数据库成功或者失败这里回调;
-db.on("error", console.error.bind(console, "connection error:"));
-db.once("open", () => {
-  // 成功回调
-  debug("连接数据库成功");
-});
+// db.on("error", console.error.bind(console, "connection error:"));
+// db.once("open", () => {
+//   // 成功回调
+//   debug("连接数据库成功");
+// });
 
 //爬虫
 let crawler = function (url) {
@@ -329,8 +329,10 @@ async function getChapter(category, index, chapter) {
     //这里做content塞入处理
     crawlerChapter.title = $("#wrapper > div.content_read > div > div.bookname > h1").text();
     crawlerChapter.content = content;
-    crawlerChapter.lastChapter = $("#wrapper > div.content_read > div > div.bookname > div.bottem1 > a:nth-child(2)").attr("href").replace(".html", "");
-    crawlerChapter.nextChapter = $("#wrapper > div.content_read > div > div.bookname > div.bottem1 > a:nth-child(4)").attr("href").replace(".html", "");
+    crawlerChapter.lastChapter = $("#wrapper > div.content_read > div > div.bookname > div.bottem1 > a:nth-child(2)")
+    .attr("href").replace(".html", "");
+    crawlerChapter.nextChapter = $("#wrapper > div.content_read > div > div.bookname > div.bottem1 > a:nth-child(4)")
+    .attr("href").replace(".html", "");
   }).catch(function(err) {
     debug(err);
   });
