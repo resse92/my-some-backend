@@ -7,7 +7,9 @@
     "start": "DEBUG=chapter-one,book,app nodemon app.js",
     "prod": "pm2 start app.js --name 'novel'",
     "dev": "http-server dist -o",
-    "test": ""
+    "test": "",
+    "lint": "eslint *.js",
+    "format": "prettier-eslint --write \"src/**/*.js\""
   },
   "author": "alexzhu",
   "license": "ISC",
@@ -23,7 +25,6 @@
     "co": "^4.6.0",
     "crawler": "^1.0.2",
     "debug": "^2.2.0",
-    "eslint": "^3.18.0",
     "http-server": "^0.9.0",
     "jade": "^1.11.0",
     "jsdom": "^9.6.0",
@@ -46,9 +47,27 @@
     "babel-eslint": "^7.2.0",
     "babel-preset-es2015": "^6.18.0",
     "del": "^2.2.2",
-    "eslint": "^3.18.0"
+    "eslint": "^3.18.0",
+    "eslint-plugin-prettier": "^2.6.0",
+    "prettier": "1.11.0",
+    "prettier-eslint-cli": "^4.7.1"
   },
   "comment": {
     "p": "pm2 start app.js -i 0 --name 'simplereader'"
+  },
+  "eslintConfig": {
+    "extends": [
+      "prettier"
+    ],
+    "plugins": [
+      "prettier"
+    ],
+    "rules": {
+      "prettier/prettier": "error"
+    }
+  },
+  "prettier": {
+    "singleQuote": true,
+    "semi": false
   }
 }
