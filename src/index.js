@@ -1,15 +1,9 @@
 const router = require('koa-router')()
-const crawler = require('./crawler-async.js')
+const crawler = require('./crawler/crawler-async.js')
 const debug = require('debug')('chapter-one')
 const setting = require('../setting.js')
 
 router.get('/', async (ctx, next) => {
-  ctx.res.setHeader('Access-Control-Allow-Origin', '*')
-  ctx.res.setHeader(
-    'Access-Control-Allow-Headers',
-    'Origin, X-Requested-With, Content-Type, Accept'
-  )
-  ctx.res.setHeader('Access-Control-Allow-Methods', 'GET')
   next()
 })
 

@@ -14,7 +14,7 @@ const etag = require('koa-etag') // 配合上个使用的
 const views = require('koa-views')
 const setting = require('./setting.js')
 const debug = require('debug')('app')
-const router = require('./routes/index.js')
+const router = require('./src/index.js')
 const convert = require('koa-convert')
 const cors = require('koa-cors')
 
@@ -34,8 +34,13 @@ app.use(
     flush: require('zlib').Z_SYNC_FLUSH
   })
 )
-
-app.use(cors())
+// 设置跨域
+app.use(cors({
+  origin: function(ctx) {
+    return '*'
+  },
+  allowedMethods: ['GET']
+}))
 
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')))
 

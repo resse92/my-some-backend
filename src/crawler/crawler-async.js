@@ -1,12 +1,12 @@
 'use strict'
 const debug = require('debug')('chapter-one')
 const Crawler = require('crawler')
-const setting = require('../setting.js')
+const setting = require('../../setting.js')
 let c = new Crawler()
 // const mongoose = require("mongoose");
 
-let book = require('./models/book.js')
-let chapter = require('./models/chapter.js')
+let book = require('../models/book.js')
+let chapter = require('../models/chapter.js')
 
 // mongoose.connect(setting.db_url);
 
