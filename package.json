@@ -14,6 +14,7 @@
   "author": "alexzhu",
   "license": "ISC",
   "dependencies": {
+    "axios": "^0.18.0",
     "babel": "^6.23.0",
     "babel-core": "^6.18.2",
     "babel-polyfill": "^6.23.0",

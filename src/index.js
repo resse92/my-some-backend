@@ -3,11 +3,11 @@ const crawler = require('./crawler/crawler-async.js')
 const debug = require('debug')('chapter-one')
 const setting = require('../setting.js')
 
-router.get('/', async (ctx, next) => {
+router.get('/crawler', async (ctx, next) => {
   next()
 })
 
-router.get('/index', async (ctx, next) => {
+router.get('/crawler/index', async (ctx, next) => {
   let res = await crawler.crawlerHomePage()
   ctx.body = res
 })
@@ -21,9 +21,9 @@ router.get('/crawler/:category/:page', async (ctx, next) => {
 router.get('/crawler/allbook', (ctx, next) => {
   crawler.crawlerAll('http://www.biquku.com/xiaoshuodaquan')
   ctx.body = '开始爬虫全部书籍'
-})
+})     
 
-router.get('/book/:category/:book', async (ctx, next) => {
+router.get('/crawler/book/:category/:book', async (ctx, next) => {
   ctx.body = await crawler.crawlerBookDetail(
     ctx.params.category,
     ctx.params.book
@@ -31,7 +31,7 @@ router.get('/book/:category/:book', async (ctx, next) => {
 })
 
 // 爬虫单个章节
-router.get('/book/:category/:book/:chapter', async (ctx, next) => {
+router.get('/crawler/book/:category/:book/:chapter', async (ctx, next) => {
   // ctx.body = await crawler
   ctx.body = await crawler.crawlerChapter(
     ctx.params.category,
@@ -56,7 +56,7 @@ router.get('/:category/:num', async (ctx, next) => {
 })
 
 // 取得章节
-router.get('/book/:bookNum/:startChapter', async (ctx, next) => {
+router.get('/crawler/book/:bookNum/:startChapter', async (ctx, next) => {
   if (ctx.params.bookNum === 'crawler') {
     next()
     return
