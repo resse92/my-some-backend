@@ -17,6 +17,7 @@ const debug = require('debug')('app')
 const router = require('./src/index.js')
 const convert = require('koa-convert')
 const cors = require('koa-cors')
+const Redis = require('ioredis')
 
 // ---------- override app.use method  middleware migrate to v2.x----------
 const _use = app.use
@@ -42,6 +43,15 @@ app.use(cors({
   allowedMethods: ['GET']
 }))
 
+// redis
+const redis = new Redis({
+  host: '127.0.0.1',
+  port: 6379,
+  prefix: 'novelcrawler:',
+  ttl: 60 * 60 * 23,
+  db: 0
+})
+
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')))
 
 //e-tag works together with conditional-get
@@ -56,3 +66,11 @@ app.on('error', function(err, ctx) {
 app.use(router.routes()).use(router.allowedMethods())
 
 app.listen(setting.port)
+
+router.get('/', async function(ctx, next) {
+  redis.set('test', 'kwg kwg kwg')
+  const doc = await redis.get('test', function(err, doc) {
+    return doc
+  })
+  ctx.body = doc
+})
