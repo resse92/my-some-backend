@@ -1,7 +1,7 @@
 const router = require('koa-router')()
-const crawler = require('./crawler/crawler-async.js')
+const crawler = require('../crawler/crawler-async.js')
 const debug = require('debug')('chapter-one')
-const setting = require('../setting.js')
+const setting = require('../../setting.js')
 
 router.get('/crawler', async (ctx, next) => {
   next()
@@ -46,7 +46,7 @@ function getCategory(category, page) {
 }
 
 //查询书籍信息
-router.get('/:category/:num', async (ctx, next) => {
+router.get('/crawler/:category/:num', async (ctx, next) => {
   if (ctx.params.category === 'book') {
     next()
     return

@@ -14,7 +14,8 @@ const etag = require('koa-etag') // 配合上个使用的
 const views = require('koa-views')
 const setting = require('./setting.js')
 const debug = require('debug')('app')
-const router = require('./src/index.js')
+const crawlerRouter = require('./src/router/crawler')
+const zhuishushenqiRouter = require('./src/router/index')
 const convert = require('koa-convert')
 const cors = require('koa-cors')
 const Redis = require('ioredis')
@@ -44,13 +45,13 @@ app.use(cors({
 }))
 
 // redis
-const redis = new Redis({
-  host: '127.0.0.1',
-  port: 6379,
-  prefix: 'novelcrawler:',
-  ttl: 60 * 60 * 23,
-  db: 0
-})
+// const redis = new Redis({
+//   host: '127.0.0.1',
+//   port: 6379,
+//   prefix: 'novelcrawler:',
+//   ttl: 60 * 60 * 23,
+//   db: 0
+// })
 
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')))
 
@@ -63,14 +64,6 @@ app.on('error', function(err, ctx) {
   debug('server error', err, ctx)
 })
 
-app.use(router.routes()).use(router.allowedMethods())
-
+app.use(zhuishushenqiRouter.routes()).use(zhuishushenqiRouter.allowedMethods())
+app.use(crawlerRouter.routes()).use(crawlerRouter.allowedMethods())
 app.listen(setting.port)
-
-router.get('/', async function(ctx, next) {
-  redis.set('test', 'kwg kwg kwg')
-  const doc = await redis.get('test', function(err, doc) {
-    return doc
-  })
-  ctx.body = doc
-})
