@@ -14,11 +14,13 @@ const etag = require('koa-etag') // 配合上个使用的
 const views = require('koa-views')
 const setting = require('./setting.js')
 const debug = require('debug')('app')
-const crawlerRouter = require('./src/router/crawler')
-const zhuishushenqiRouter = require('./src/router/index')
 const convert = require('koa-convert')
 const cors = require('koa-cors')
 const Redis = require('ioredis')
+
+const crawlerRouter = require('./src/router/crawler')
+const zhuishushenqiRouter = require('./src/router/index')
+const xiaokanba = require('./src/router/xiaokanba')
 
 // ---------- override app.use method  middleware migrate to v2.x----------
 const _use = app.use
@@ -66,4 +68,6 @@ app.on('error', function(err, ctx) {
 
 app.use(zhuishushenqiRouter.routes()).use(zhuishushenqiRouter.allowedMethods())
 app.use(crawlerRouter.routes()).use(crawlerRouter.allowedMethods())
+app.use(xiaokanba.routes()).use(xiaokanba.allowedMethods())
+
 app.listen(setting.port)

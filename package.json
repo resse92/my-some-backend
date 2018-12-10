@@ -52,7 +52,8 @@
     "eslint": "^3.18.0",
     "eslint-plugin-prettier": "^2.6.0",
     "prettier": "1.11.0",
-    "prettier-eslint-cli": "^4.7.1"
+    "prettier-eslint-cli": "^4.7.1",
+    "nodemon": "^1.18.7"
   },
   "comment": {
     "p": "pm2 start app.js -i 0 --name 'simplereader'"
